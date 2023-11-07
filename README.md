@@ -17,6 +17,6 @@ The entity linker consists of 3 modules :
 The steps for using the entity linker are as follows :
 
 - load a graph with the **graph loader**;
-- load a NLP pipeline from spaCy to pre process the text;
+- load a NLP pipeline from spaCy to preprocess the text;
 - extract the candidate entities from the text with the **entity matcher**;
 - apply the **disambiguator** if needed.
