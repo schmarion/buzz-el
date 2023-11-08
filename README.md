@@ -20,3 +20,7 @@ The steps for using the entity linker are as follows :
 - load a NLP pipeline from spaCy to preprocess the text;
 - extract the candidate entities from the text with the **entity matcher**;
 - apply the **disambiguator** if needed.
+
+## Usage
+
+The project is not yet pushed on Pypi, but it is already setup to be loaded with `pip install`. To pip install the project as a Python package run the following command in your terminal: `pip install git+https://github.com/schmarion/buzz-el.git`.
