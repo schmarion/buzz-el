@@ -24,11 +24,7 @@ def base_graph_loader(graph_file_path):
 
 def test_graph_loader_init(graph_file_path):
     # Test initializing the GraphLoader object with valid parameters
-<<<<<<< HEAD
     annotation_properties = {"rdfs:label", "skos:altLabel"}
-=======
-    annotation_properties = {"rdfs:label", "custom:property"}
->>>>>>> f248e28ce70b75dc93cd913f42a5f72b5e43ac55
     lang_filter_tag = "en"
     graph_loader = GraphLoader(graph_file_path, annotation_properties, lang_filter_tag)
 
