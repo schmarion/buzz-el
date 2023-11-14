@@ -151,3 +151,5 @@ dmypy.json
 
 # Cython debug symbols
 cython_debug/
+buzz_el/rdf_kg_2_el_loader.py
+goofing_around.ipynb
