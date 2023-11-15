@@ -1,11 +1,11 @@
 from collections import defaultdict
 from os import PathLike
-from typing import Any, Dict, Optional, Set
+from typing import Dict, Optional, Set
 
 from rdflib import Graph
 from spacy.util import ensure_path
 
-from buzz_el.commons.utils import is_valid_url
+from ..commons.utils import is_valid_url
 
 
 class GraphLoader:
