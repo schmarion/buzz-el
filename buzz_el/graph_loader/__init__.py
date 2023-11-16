@@ -1,1 +1,1 @@
-from .graph_loader import GraphLoader
+from .knowledge_graph import KnowledgeGraph
