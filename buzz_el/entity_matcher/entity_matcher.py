@@ -9,22 +9,22 @@ from ..graph_loader import GraphLoader
 
 class EntityMatcher:
     """
-    A class to construct a spaCy span ruler from an RDF graph.
+    A class to construct a spaCy span ruler from a RDF graph.
 
     Parameters
     ----------
     graph_loader : GraphLoader
         An instance of the GraphLoader class for loading knowledge graph data.
-    nlp : Language
-        The Spacy Language to use when constructing the spaCy span ruler.
+    spacy_model : Language
+        The spaCy language to use when constructing the spaCy span ruler.
     span_ruler_config : Optional[Dict], optional
         Configuration for the spaCy span ruler, by default {"phrase_matcher_attr": "LOWER"}.
-        See: <https://spacy.io/api/spanruler#config>
+        See <https://spacy.io/api/spanruler#config>
 
     Attributes
     ----------
-    nlp : Language
-        The Spacy Language to use when constructing the spaCy span ruler.
+    spacy_model : Language
+        The spaCy language to use when constructing the spaCy span ruler.
     graph_loader : GraphLoader
         An instance of the GraphLoader class for loading knowledge graph data.
     _span_ruler_config : Dict
@@ -33,45 +33,44 @@ class EntityMatcher:
     spacy_component : SpanRuler
         The spaCy span ruler component for the knowledge graph entity matching.
     """
+
     def __init__(
         self,
         graph_loader: GraphLoader,
-        nlp: Language,
+        spacy_model: Language,
         span_ruler_config: Optional[Dict] = None,
     ) -> None:
         """
-        Initializes the EntityMatcher instance.
+        Initialiser for the entity matcher.
 
         Parameters
         ----------
         graph_loader : GraphLoader
             An instance of the GraphLoader class for loading knowledge graph data.
-        nlp : Language
-            The Spacy Language to use when constructing the spaCy span ruler.
+        spacy_model : Language
+            The spaCy language to use when constructing the spaCy span ruler.
         span_ruler_config : Optional[Dict], optional
             Configuration for the spaCy span ruler, by default {"phrase_matcher_attr": "LOWER"}.
             See: <https://spacy.io/api/spanruler#config>
         """
-        self.nlp = nlp
+        self.spacy_model = spacy_model
         self.graph_loader = graph_loader
 
         if span_ruler_config is None:
-            self._span_ruler_config = {
-                "phrase_matcher_attr": "LOWER"      
-            }
+            self._span_ruler_config = {"phrase_matcher_attr": "LOWER"}
         else:
             self._span_ruler_config = span_ruler_config
 
-        self.build_entity_ruler() # set self.spacy_component
-        
+        self.build_entity_ruler()  # set self.spacy_component
+
     def __call__(self, doc: Doc) -> None:
         """
-        Applies the entity matching to a spaCy Doc.
+        Apply the entity matching to a spaCy doc.
 
         Parameters
         ----------
         doc : Doc
-            The spaCy Doc to process.
+            The spaCy doc to process.
         """
         if self.spacy_component is None:
             self.build_entity_ruler()
@@ -80,7 +79,7 @@ class EntityMatcher:
 
     def pipe(self, docs: Iterable[Doc]) -> Iterable:
         """
-        Applies the entity matching component to an iterable of spaCy docs.
+        Apply the entity matching component to an iterable of spaCy docs.
 
         Parameters
         ----------
@@ -96,7 +95,7 @@ class EntityMatcher:
             self.build_entity_ruler()
 
         doc_process_pipe = self.spacy_component.pipe(docs)
-        
+
         return doc_process_pipe
 
     def _construct_phrase_patterns(
@@ -104,7 +103,7 @@ class EntityMatcher:
         entity_label: Optional[str] = "KG_ENT",
     ) -> List[Dict]:
         """
-        Constructs phrase patterns for the spaCy span ruler based on the graph loader.
+        Construct phrase patterns for the spaCy span ruler based on the graph loader.
 
         Parameters
         ----------
@@ -134,7 +133,7 @@ class EntityMatcher:
         self, config: Optional[Dict] = None, entity_label: Optional[str] = "KG_ENT"
     ) -> None:
         """
-        Builds the entity matching spaCy span ruler.
+        Build the entity matching spaCy span ruler.
 
         This method updates the self.spacy_component attribute.
 
@@ -146,10 +145,10 @@ class EntityMatcher:
             The label for the constructed entity patterns, by default "KG_ENT".
         """
         if config is None:
-            ruler = SpanRuler(self.nlp, **self._span_ruler_config)
+            ruler = SpanRuler(self.spacy_model, **self._span_ruler_config)
         else:
-            ruler = SpanRuler(self.nlp, **config)
-            
+            ruler = SpanRuler(self.spacy_model, **config)
+
         ph_patterns = self._construct_phrase_patterns(
             entity_label=entity_label,
         )
