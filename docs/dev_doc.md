@@ -174,13 +174,6 @@ Setting up the virtual environment:
   - `{env/path}\Scripts\activate` on Windows
 - check that the environment is properly installed by running the test from the project root directory with the command line `pytest test`.
 
-Setting up the workspace :
-
-- add the `src/` folder to the python paths by adding the full path `{path/to/the/project/}buzz-el/src` to the file:
-  - on Linux add `{path/to/the/project/}buzz-el/src` to the file `buzz-el/venv/lib/python3.10/site-packages/_virtualenv.pth`
-  - on Windows add `{C:\path\to\the\project\}buzz-el\src` to the file `{path/to/the/project/}buzz-el\venv\Lib\site-packages\_virtualenv.pth`
-- instead, the following command can also be run each time the project is used : `export PYTHONPATH="${PYTHONPATH}:{path/to/the/project/}buzz-el/src"`
-
 Setting up project dependencies :
 
 - install the project dependencies by running `pip install -r requirements.txt` (from within the virtual environment)
