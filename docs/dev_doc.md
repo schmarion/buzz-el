@@ -8,14 +8,14 @@ classDiagram
 		+KnowledgeGraph kg
         +EntityMatcher entity_matcher
 		+Disambiguator disambiguator
-        +spacy_model spacy.Language
+        +spacy.Language spacy_model
 
 		+__call__(spacy.Doc) spacy.Doc
 	}
 
 	class EntityMatcher {
         +KnowledgeGraph kg
-        +spacy_model spacy.Language
+        +spacy.Language spacy_model
         +EntityMatcherConfig config
 
         +__call__(spacy.Doc) spacy.Doc
@@ -48,7 +48,7 @@ classDiagram
 	}
 
 	class DisambiguatorConfig {
-		+Optional[Callable[[Str], Array]] vectorizer 
+		+Optional[Callable[[Str], Array]] vectorizer
         +Optional[Callable[[Array, Array], Float]] similarity_measure
         +Optional[List[Str]] priorities
         +Optional[Dict[Str, Int]] entities_weight
@@ -66,9 +66,9 @@ classDiagram
 
 ## Some notes about the project philosophy:
 
-The relies on the spaCy NLP Python library and aim at being integrated into a spaCy project.
+The projet relies on the spaCy NLP python library and aims at being integrated into a spaCy project.
 
-At minimum the entity linker should be provided as a spaCy pipe. 
+At minimum the entity linker should be provided as a spaCy pipe.
 
 ### Knowledge Graph
 
@@ -78,8 +78,8 @@ The Knowledge Graph class must provide all methods needed by other components to
 
 The Entity Linker should:
 
-- without any parameters other than the KG, build a minimum Entity linker based on string matching.
-- Apply the components in the right order (Matcher then Disambiguator)
+- without any parameters other than the KG, build a minimum entity linker based on string matching.
+- apply the components in the right order (Matcher then Disambiguator)
 
 The goal is to make the Entity Linker a spaCy pipe.
 
@@ -87,9 +87,10 @@ The goal is to make the Entity Linker a spaCy pipe.
 
 The entity matcher should extract mentions and assign them candidate entities.
 
-The different entity matching methods can be executed in parallel. They are then stored separately so they can be use during the disambiguation. 
+The different entity matching methods can be executed in parallel. They are then stored separately so they can be use during the disambiguation part.
 
 Keys to save spans on the doc.spans dictionary based on the matching type:
+
 - string: base entity matching process relying on exact string alignment. It is based on the spaCy span ruler component.
 - fuzzy: entity matching based on fuzzy string matching. It relies on the spaczz project.
 - vector: entity matching based on string vector similarities.
@@ -166,7 +167,7 @@ git reset --hard {origin}/{branch_to_be_merged}
 
 Setting up the virtual environment:
 
-- go to the project root directory: `ontology-learning/`
+- go to the project root directory: `buzz-el/`
 - create the virtual environment by running `virtualenv -p python3.10 {env/path}` (virtualenv needs to be installed) or `python3 -m venv {env/path}`. As a result, you should have a new folder at your project root.
 - activate the virtual environment by running
   - `source {env/path}/bin/activate` on Linux
@@ -175,10 +176,10 @@ Setting up the virtual environment:
 
 Setting up the workspace :
 
-- add the `src/` folder to the python paths by adding the full path `{path/to/the/project/}ontology-learning/src` to the file:
-  - on Linux add `{path/to/the/project/}ontology-learning/src` to the file `ontology-learning/venv/lib/python3.10/site-packages/_virtualenv.pth`
-  - on Windows add `{C:\path\to\the\project\}ontology-learning\src` to the file `{path/to/the/project/}ontology-learning\venv\Lib\site-packages\_virtualenv.pth`
-- instead, the following command can also be run each time the project is used : `export PYTHONPATH="${PYTHONPATH}:{path/to/the/project/}ontology-learning/src"`
+- add the `src/` folder to the python paths by adding the full path `{path/to/the/project/}buzz-el/src` to the file:
+  - on Linux add `{path/to/the/project/}buzz-el/src` to the file `buzz-el/venv/lib/python3.10/site-packages/_virtualenv.pth`
+  - on Windows add `{C:\path\to\the\project\}buzz-el\src` to the file `{path/to/the/project/}buzz-el\venv\Lib\site-packages\_virtualenv.pth`
+- instead, the following command can also be run each time the project is used : `export PYTHONPATH="${PYTHONPATH}:{path/to/the/project/}buzz-el/src"`
 
 Setting up project dependencies :
 
