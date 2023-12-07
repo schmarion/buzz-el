@@ -36,9 +36,11 @@ class EntityMatcher:
 
     def __init__(
         self,
-        graph_loader: GraphLoader,
+        graph_loader: GraphLoader, # KG
         spacy_model: Language,
-        span_ruler_config: Optional[Dict] = None,
+        ignore_case,
+        min_r,
+        fuzzy_funct
     ) -> None:
         """
         Initialiser for the entity matcher.

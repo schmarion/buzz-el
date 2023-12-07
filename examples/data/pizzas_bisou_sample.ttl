@@ -7,6 +7,9 @@ pizza:_biancaCastafiore rdfs:label "Bianca Castafiore"@en,
         "Bianca Castafiore"@fr .
 pizza:_biancaCastafiore skos:altLabel "Castafiore"@en,
         "Castafiore"@fr .
+pizza:_biancaCastafiore rdfs:comment "The 'Bianca Castafiore' pizza features a ricotta cream base and comes in two varieties: goat cheese pizza and vegetarian pizza. Toppings include black pepper, goat cheese, honey, fior di latte mozzarella, spinach, and walnuts."@en,
+        "La pizza 'Bianca Castafiore' présente une base de crème de ricotta et se décline en deux variétés : pizza au fromage de chèvre et pizza végétarienne. Les garnitures comprennent du poivre noir, du fromage de chèvre, du miel, de la mozzarella fior di latte, des épinards et des noix."@fr .
+        
 
 pizza:_biancaCastafiore pizza:has_base pizza:_ricottaCreamBase ;
     pizza:has_kind pizza:_goatCheesePizza,
@@ -22,6 +25,8 @@ pizza:_burraTadah rdfs:label "Burra'tadah!"@en,
         "Burra'tadah!"@fr .
 pizza:_burraTadah skos:altLabel "Burrata"@en,
          "Burrata"@fr .
+pizza:_burraTadah rdfs:comment "The 'BurraTadah' pizza features a tomato base and falls under the category of 'pork pizzas.' Its delectable toppings include black pepper, cherry tomatoes, mozzarella di burrata, fior di latte mozzarella, olive oil, Parma ham, Parmesan cheese, and rocket."@en,  
+        "La pizza 'BurraTadah' présente une base de tomate et appartient à la catégorie des pizzas au porc. Ses garnitures délicieuses comprennent du poivre noir, des tomates cerises, de la mozzarella di burrata, de la mozzarella fior di latte, de l'huile d'olive, du jambon de Parme, du fromage Parmesan et de la roquette."@fr .
 
 pizza:_burraTadah pizza:has_base pizza:_tomatoBase ;
     pizza:has_kind pizza:_porkPizza ;
@@ -37,6 +42,8 @@ pizza:_burraTadah pizza:has_base pizza:_tomatoBase ;
 pizza:_godSaveTheKing rdfs:label "God save the king"@en,  
         "God save the king"@fr .
 pizza:_godSaveTheKing skos:altLabel "dieu sauve le roi"@fr .
+pizza:_godSaveTheKing rdfs:comment "The 'God Save The King' pizza features a tomato base and falls under the category of 'pork pizzas.' Its toppings include Parisian mushroom carpaccio, ham from Paris with herbs, fior di latte mozzarella, and olives."@en,
+         "La pizza 'God Save The King' présente une base de tomate et appartient à la catégorie des pizzas au porc. Ses garnitures incluent du carpaccio de champignons de Paris, du jambon de Paris aux herbes, de la mozzarella fior di latte et des olives."@fr .
 
 pizza:_godSaveTheKing pizza:has_base pizza:_tomatoBase ;
     pizza:has_kind pizza:_porkPizza ;
