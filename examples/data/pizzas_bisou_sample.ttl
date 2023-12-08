@@ -1,0 +1,110 @@
+@prefix pizza: <http://www.msesboue.org/o/pizza-data-demo/bisou#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+
+
+pizza:_biancaCastafiore rdfs:label "Bianca Castafiore"@en,  
+        "Bianca Castafiore"@fr .
+pizza:_biancaCastafiore skos:altLabel "Castafiore"@en,
+        "Castafiore"@fr .
+pizza:_biancaCastafiore rdfs:comment "The 'Bianca Castafiore' pizza features a ricotta cream base and comes in two varieties: goat cheese pizza and vegetarian pizza. Toppings include black pepper, goat cheese, honey, fior di latte mozzarella, spinach, and walnuts."@en,
+        "La pizza 'Bianca Castafiore' présente une base de crème de ricotta et se décline en deux variétés : pizza au fromage de chèvre et pizza végétarienne. Les garnitures comprennent du poivre noir, du fromage de chèvre, du miel, de la mozzarella fior di latte, des épinards et des noix."@fr .
+        
+
+pizza:_biancaCastafiore pizza:has_base pizza:_ricottaCreamBase ;
+    pizza:has_kind pizza:_goatCheesePizza,
+        pizza:_vegetarianPizza ;
+    pizza:has_topping pizza:_blackPepper,
+        pizza:_goatCheese,
+        pizza:_honey,
+        pizza:_mozzaFiorDiLatte,
+        pizza:_spinach,
+        pizza:_walnut .
+
+pizza:_burraTadah rdfs:label "Burra'tadah!"@en,  
+        "Burra'tadah!"@fr .
+pizza:_burraTadah skos:altLabel "Burrata"@en,
+         "Burrata"@fr .
+pizza:_burraTadah rdfs:comment "The 'BurraTadah' pizza features a tomato base and falls under the category of 'pork pizzas.' Its delectable toppings include black pepper, cherry tomatoes, mozzarella di burrata, fior di latte mozzarella, olive oil, Parma ham, Parmesan cheese, and rocket."@en,  
+        "La pizza 'BurraTadah' présente une base de tomate et appartient à la catégorie des pizzas au porc. Ses garnitures délicieuses comprennent du poivre noir, des tomates cerises, de la mozzarella di burrata, de la mozzarella fior di latte, de l'huile d'olive, du jambon de Parme, du fromage Parmesan et de la roquette."@fr .
+
+pizza:_burraTadah pizza:has_base pizza:_tomatoBase ;
+    pizza:has_kind pizza:_porkPizza ;
+    pizza:has_topping pizza:_blackPepper,
+        pizza:_cherryTomato,
+        pizza:_mozzaDiBurrata,
+        pizza:_mozzaFiorDiLatte,
+        pizza:_oliveOil,
+        pizza:_parmaHam,
+        pizza:_parmesan,
+        pizza:_rocket .
+
+pizza:_godSaveTheKing rdfs:label "God save the king"@en,  
+        "God save the king"@fr .
+pizza:_godSaveTheKing skos:altLabel "dieu sauve le roi"@fr .
+pizza:_godSaveTheKing rdfs:comment "The 'God Save The King' pizza features a tomato base and falls under the category of 'pork pizzas.' Its toppings include Parisian mushroom carpaccio, ham from Paris with herbs, fior di latte mozzarella, and olives."@en,
+         "La pizza 'God Save The King' présente une base de tomate et appartient à la catégorie des pizzas au porc. Ses garnitures incluent du carpaccio de champignons de Paris, du jambon de Paris aux herbes, de la mozzarella fior di latte et des olives."@fr .
+
+pizza:_godSaveTheKing pizza:has_base pizza:_tomatoBase ;
+    pizza:has_kind pizza:_porkPizza ;
+    pizza:has_topping pizza:_carpaccioChampignonDeParis,
+        pizza:_jambonDeParisWithHerbs,
+        pizza:_mozzaFiorDiLatte,
+        pizza:_olive .
+
+pizza:_blackPepper rdfs:label "black pepper"@en, 
+        "poivre noir"@fr .
+pizza:_blackPepper skos:altLabel "pepper"@en, 
+        "poivre"@fr .
+
+pizza:_goatCheese rdfs:label "goat cheese"@en, 
+        "fromage de chèvre"@fr .
+pizza:_goatCheese skos:altLabel "chèvre"@fr .
+
+pizza:_honey rdfs:label "honey"@en, 
+        "miel"@fr .
+
+pizza:_mozzaFiorDiLatte rdfs:label "Mozzarella Fior Di Latte"@en, 
+        "Mozzarella"@fr .
+pizza:_mozzaFiorDiLatte skos:altLabel "Mozzarella"@en .
+
+pizza:_spinach rdfs:label "spinach"@en, 
+        "épinard"@fr .
+pizza:_walnut rdfs:label "walnut"@en, 
+        "noix"@fr .
+pizza:_cherryTomato rdfs:label "cherry tomato"@en, 
+        "tomates cerises"@fr .
+pizza:_mozzaDiBurrata rdfs:label "Mozzarella Di Burrata"@en, 
+        "Mozzarella Burrata"@fr .
+pizza:_mozzaDiBurrata skos:altLabel "Burrata"@en, 
+        "Burrata"@fr .
+
+pizza:_oliveOil rdfs:label "olive oil"@en, 
+        "huile d'olive"@fr .
+pizza:_parmaHam rdfs:label "parma ham"@en, 
+        "jambon de parme"@fr .
+pizza:_parmesan rdfs:label "parmesan"@en, 
+        "parmesan"@fr .
+pizza:_rocket rdfs:label "rocket"@en, 
+        "roquette"@fr .
+pizza:_rocket skos:altLabel "salade"@fr .
+
+pizza:_carpaccioChampignonDeParis rdfs:label "carpaccio de champignons de Paris"@en, 
+        "carpaccio de champignons de Paris"@fr .
+pizza:_jambonDeParisWithHerbs rdfs:label "jambon de Paris with herbs"@en, 
+        "jambon de Paris au herbes"@fr .
+pizza:_olive rdfs:label "olive"@en, 
+        "olive"@fr .
+
+pizza:_porkPizza rdfs:label "pork pizza"@en, 
+        "pizza au porc"@fr .
+pizza:_goatCheesePizza rdfs:label "goat cheese pizza"@en, 
+        "pizza au fromage de chèvre"@fr .
+pizza:_goatCheesePizza skos:altLabel "pizza au chèvre"@fr .
+pizza:_vegetarianPizza rdfs:label "vegetarian pizza"@en, 
+        "pizza végétarienne"@fr .
+
+pizza:_tomatoBase rdfs:label "tomato base"@en, 
+        "base tomate"@fr .
+pizza:_ricottaCreamBase rdfs:label "ricotta cream base"@en, 
+        "base ricotta"@fr .
