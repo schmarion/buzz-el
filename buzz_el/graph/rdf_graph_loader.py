@@ -21,7 +21,7 @@ class RDFGraphLoader(GraphLoader):
     context_properties : Optional[Set[str]], optional
         Set of relations used to link entities to their context strings, by default None.
     lang_filter_tag : Optional[str], optional
-        Language filter tag to filter entity labels and context strings based on language, 
+        Language filter tag to filter entity labels and context strings based on language,
         by default None.
 
     Attributes
@@ -41,25 +41,25 @@ class RDFGraphLoader(GraphLoader):
     _label_sparql_alt_path_str: str
         Constructed alternative entity labels paths for use in SPARQL queries.
     _context_sparql_alt_path_str: str
-        Constructed alternative entity context strings paths for use in SPARQL queries, 
+        Constructed alternative entity context strings paths for use in SPARQL queries,
         by default None.
     _sparql_var: str
         Name of the SPARQL variable to use when processing SPARQL results.
-        It is an attribute to make sure all SPARQL queries use the same variable name. 
+        It is an attribute to make sure all SPARQL queries use the same variable name.
     _lang_filter : str
-        Language filter tag to filter entity labels and context strings based on language, 
+        Language filter tag to filter entity labels and context strings based on language,
         by default None.
     _sparql_lang_filter_str: str
         The portion of the SPARQL query constituting the language filter.
     """
 
     def __init__(
-            self,
-            kg_file_path: PathLike,
-            label_properties: Optional[Set[str]] = None,
-            context_properties: Optional[Set[str]] = None,
-            lang_filter_tag: Optional[str] = None,
-        ) -> None:
+        self,
+        kg_file_path: PathLike,
+        label_properties: Optional[Set[str]] = None,
+        context_properties: Optional[Set[str]] = None,
+        lang_filter_tag: Optional[str] = None,
+    ) -> None:
         """Initialise the RDF graph loader object.
 
         Parameters
@@ -71,7 +71,7 @@ class RDFGraphLoader(GraphLoader):
         context_properties : Optional[Set[str]], optional
             Set of relations used to link entities to their context strings, by default None.
         lang_filter_tag : Optional[str], optional
-            Language filter tag to filter entity labels and context strings based on language, 
+            Language filter tag to filter entity labels and context strings based on language,
             by default None.
         """
 
@@ -90,8 +90,8 @@ class RDFGraphLoader(GraphLoader):
         else:
             self._context_sparql_alt_path_str = "|".join(self._context_properties)
 
-        self._sparql_var = "label"
-        
+        self._sparql_var = "sparql_key"
+
         self._lang_filter = lang_filter_tag
         self._sparql_lang_filter_str = (
             f'FILTER ( lang(?{self._sparql_var}) = "{self._lang_filter}" )'
@@ -201,14 +201,16 @@ class RDFGraphLoader(GraphLoader):
 
         patterns = []
         for res in sparql_res:
-            patterns.append({
-                "label": "KG_ENT", 
-                "pattern": str(res["label"]),
-                "id": str(res["ent_uri"])
-            })
+            patterns.append(
+                {
+                    "label": "KG_ENT",
+                    "pattern": str(res[self._sparql_var]),
+                    "id": str(res["ent_uri"]),
+                }
+            )
 
         return patterns
-    
+
     def _build_ent_labels_sparql_query(self) -> str:
         """
         Build the SPARQL query for extracting distinct entity URIs and labels.
@@ -222,7 +224,7 @@ class RDFGraphLoader(GraphLoader):
             }}
         """
         return sparql_q_ent_labels
-    
+
     def _build_ent_context_from_labels_query(self, entity_uri: str) -> str:
         """
         Build the SPARQL query for extracting an entity context string from the surrounding
@@ -239,7 +241,7 @@ class RDFGraphLoader(GraphLoader):
         """
 
         return ent_context_query
-    
+
     def _build_ent_context_from_props_query(self, entity_uri: str) -> str:
         """
         Build the SPARQL query for extracting an entity context string from the specified context properties.
@@ -297,9 +299,7 @@ class RDFGraphLoader(GraphLoader):
         get_context = self.kg_get_context()
 
         kg_instance = KnowledgeGraph(
-            kg=self.kg,
-            entity_patterns=entity_patterns,
-            get_entity_context=get_context
+            kg=self.kg, entity_patterns=entity_patterns, get_entity_context=get_context
         )
 
         return kg_instance
