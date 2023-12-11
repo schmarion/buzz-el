@@ -36,8 +36,9 @@ class EntityMatcher:
         The string matcher component matching entities through string alignment.
     _fuzzy_matcher: Callable[spacy.tokens.Doc, spacy.tokens.Doc]
         The fuzzy matcher component matching entities through string fuzzy alignment.
-    _span_ruler_config : Dict
-        Configuration for the spaCy span ruler, by default {"spans_key": "string"}.
+    _string_matcher_config : Dict
+        Configuration for the spaCy span ruler used for string matching,
+        by default {"spans_key": "string"}.
         See: <https://spacy.io/api/spanruler#config>
     """
 
@@ -45,9 +46,9 @@ class EntityMatcher:
         self,
         knowledge_graph: KnowledgeGraph,
         spacy_model: Language,
-        ignore_case: Optional[bool]=True,
-        min_r: Optional[int]=None,
-        fuzzy_funct: Optional[str]=None
+        ignore_case: Optional[bool] = True,
+        min_r: Optional[int] = None,
+        fuzzy_funct: Optional[str] = None,
     ) -> None:
         """Initialiser for the entity matcher.
 
@@ -68,9 +69,9 @@ class EntityMatcher:
         self.kg = knowledge_graph
         self.ignore_case = ignore_case
 
-        self._span_ruler_config = {"spans_key": "string"}
+        self._string_matcher_config = {"spans_key": "string"}
         if self.ignore_case:
-            self._span_ruler_config["phrase_matcher_attr"]= "LOWER"
+            self._string_matcher_config["phrase_matcher_attr"] = "LOWER"
 
         self._string_matcher = None
         self._fuzzy_matcher = None
@@ -127,7 +128,7 @@ class EntityMatcher:
             Configuration for the spaCy span ruler, by default None.
         """
         if config is None:
-            ruler = SpanRuler(self.spacy_model, **self._span_ruler_config)
+            ruler = SpanRuler(self.spacy_model, **self._string_matcher_config)
         else:
             ruler = SpanRuler(self.spacy_model, **config)
 
