@@ -1,71 +1,84 @@
-from typing import Dict, Iterable, List, Optional
+from typing import Dict, Iterable, Optional
 
 from spacy.language import Language
 from spacy.pipeline import SpanRuler
 from spacy.tokens import Doc
 
-from ..graph_loader import GraphLoader
+from ..graph import KnowledgeGraph
 
 
 class EntityMatcher:
     """
-    A class to construct a spaCy span ruler from a RDF graph.
+    A class to construct an entity matcher from a knowledge graph.
 
     Parameters
     ----------
-    graph_loader : GraphLoader
-        An instance of the GraphLoader class for loading knowledge graph data.
+    knowledge_graph : KnowledgeGraph
+        The knowledge graph to match the entities.
     spacy_model : Language
-        The spaCy language to use when constructing the spaCy span ruler.
-    span_ruler_config : Optional[Dict], optional
-        Configuration for the spaCy span ruler, by default {"phrase_matcher_attr": "LOWER"}.
-        See <https://spacy.io/api/spanruler#config>
+        The spaCy model to use in internal spaCy components.
+    ignore_case : Optional[bool], optional
+        Whether to ignore case, by default True.
+    min_r : Optional[int], optional
+        TODO, by default None
+    fuzzy_funct : Optional[str], optional
+        The fuzzy matching function to use, by default None.
 
     Attributes
     ----------
+    kg : KnowledgeGraph
+        The knowledge graph to match the entities.
     spacy_model : Language
-        The spaCy language to use when constructing the spaCy span ruler.
-    graph_loader : GraphLoader
-        An instance of the GraphLoader class for loading knowledge graph data.
+        The spaCy model to use in internal spaCy components.
+    ignore_case : bool
+        Whether to ignore case.
+    _string_matcher: Callable[spacy.tokens.Doc, spacy.tokens.Doc]
+        The string matcher component matching entities through string alignment.
+    _fuzzy_matcher: Callable[spacy.tokens.Doc, spacy.tokens.Doc]
+        The fuzzy matcher component matching entities through string fuzzy alignment.
     _span_ruler_config : Dict
-        Configuration for the spaCy span ruler, by default {"phrase_matcher_attr": "LOWER"}.
+        Configuration for the spaCy span ruler, by default {"spans_key": "string"}.
         See: <https://spacy.io/api/spanruler#config>
-    spacy_component : SpanRuler
-        The spaCy span ruler component for the knowledge graph entity matching.
     """
 
     def __init__(
         self,
-        graph_loader: GraphLoader, # KG
+        knowledge_graph: KnowledgeGraph,
         spacy_model: Language,
-        ignore_case,
-        min_r,
-        fuzzy_funct
+        ignore_case: Optional[bool]=True,
+        min_r: Optional[int]=None,
+        fuzzy_funct: Optional[str]=None
     ) -> None:
-        """
-        Initialiser for the entity matcher.
+        """Initialiser for the entity matcher.
 
         Parameters
         ----------
-        graph_loader : GraphLoader
-            An instance of the GraphLoader class for loading knowledge graph data.
+        knowledge_graph : KnowledgeGraph
+            The knowledge graph to match the entities.
         spacy_model : Language
-            The spaCy language to use when constructing the spaCy span ruler.
-        span_ruler_config : Optional[Dict], optional
-            Configuration for the spaCy span ruler, by default {"phrase_matcher_attr": "LOWER"}.
-            See: <https://spacy.io/api/spanruler#config>
+            The spaCy model to use in internal spaCy components.
+        ignore_case : Optional[bool], optional
+            Whether to ignore case, by default True.
+        min_r : Optional[int], optional
+            TODO, by default None
+        fuzzy_funct : Optional[str], optional
+            The fuzzy matching function to use, by default None.
         """
         self.spacy_model = spacy_model
-        self.graph_loader = graph_loader
+        self.kg = knowledge_graph
+        self.ignore_case = ignore_case
 
-        if span_ruler_config is None:
-            self._span_ruler_config = {"phrase_matcher_attr": "LOWER"}
-        else:
-            self._span_ruler_config = span_ruler_config
+        self._span_ruler_config = {"spans_key": "string"}
+        if self.ignore_case:
+            self._span_ruler_config["phrase_matcher_attr"]= "LOWER"
 
-        self.build_entity_ruler()  # set self.spacy_component
+        self._string_matcher = None
+        self._fuzzy_matcher = None
 
-    def __call__(self, doc: Doc) -> None:
+        self.build_string_matcher()
+        # self.build_fuzzy_matcher()
+
+    def __call__(self, doc: Doc) -> Doc:
         """
         Apply the entity matching to a spaCy doc.
 
@@ -74,12 +87,17 @@ class EntityMatcher:
         doc : Doc
             The spaCy doc to process.
         """
-        if self.spacy_component is None:
-            self.build_entity_ruler()
+        if self._string_matcher is None:
+            self.build_string_matcher()
+        else:
+            doc = self._string_matcher(doc)
 
-        self.spacy_component(doc)
+        if self._fuzzy_matcher is not None:
+            doc = self._fuzzy_matcher(doc)
 
-    def pipe(self, docs: Iterable[Doc]) -> Iterable:
+        return doc
+
+    def pipe(self, docs: Iterable[Doc]) -> Iterable[Doc]:
         """
         Apply the entity matching component to an iterable of spaCy docs.
 
@@ -93,68 +111,37 @@ class EntityMatcher:
         Iterable
             An iterable of processed spaCy docs.
         """
-        if self.spacy_component is None:
-            self.build_entity_ruler()
+        for doc in docs:
+            processed_doc = self(doc)
+            yield processed_doc
 
-        doc_process_pipe = self.spacy_component.pipe(docs)
-
-        return doc_process_pipe
-
-    def _construct_phrase_patterns(
-        self,
-        entity_label: Optional[str] = "KG_ENT",
-    ) -> List[Dict]:
+    def build_string_matcher(self, config: Optional[Dict] = None) -> None:
         """
-        Construct phrase patterns for the spaCy span ruler based on the graph loader.
+        Build the entity string matcher.
 
-        Parameters
-        ----------
-        entity_label : Optional[str], optional
-            The label for the constructed entity patterns, by default "KG_ENT".
-
-        Returns
-        -------
-        List[Dict]
-            A list of dictionaries representing phrase patterns.
-        """
-        phrase_patterns = []
-
-        for ent_id, match_phrases in self.graph_loader.entity_str_idx.items():
-            for match_ph in match_phrases:
-                phrase_patterns.append(
-                    {
-                        "label": entity_label,
-                        "pattern": match_ph,
-                        "id": ent_id,
-                    }
-                )
-
-        return phrase_patterns
-
-    def build_entity_ruler(
-        self, config: Optional[Dict] = None, entity_label: Optional[str] = "KG_ENT"
-    ) -> None:
-        """
-        Build the entity matching spaCy span ruler.
-
-        This method updates the self.spacy_component attribute.
+        This method updates the self._string_matcher attribute.
 
         Parameters
         ----------
         config : Optional[Dict], optional
             Configuration for the spaCy span ruler, by default None.
-        entity_label : Optional[str], optional
-            The label for the constructed entity patterns, by default "KG_ENT".
         """
         if config is None:
             ruler = SpanRuler(self.spacy_model, **self._span_ruler_config)
         else:
             ruler = SpanRuler(self.spacy_model, **config)
 
-        ph_patterns = self._construct_phrase_patterns(
-            entity_label=entity_label,
-        )
+        ruler.add_patterns(self.kg.entity_patterns)
 
-        ruler.add_patterns(ph_patterns)
+        self._string_matcher = ruler
 
-        self.spacy_component = ruler
+    def build_fuzzy_matcher(self) -> None:
+        """
+        Build the entity fuzzy matcher.
+
+        This method updates the self._fuzzy_matcher attribute.
+        """
+
+        self._fuzzy_matcher = None
+
+        raise NotImplementedError
