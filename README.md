@@ -10,14 +10,13 @@ We base our work on [spaCy](https://spacy.io/) tools.
 
 The entity linker consists of 3 modules :
 
-- the **graph loader** is responsible for loading the knowledge graph and extracting entities from it;
+- the **graph** part is responsible for loading the knowledge graph and extracting entities from it;
 - the **entity matcher** is responsible for extracting candidate entities from the given text;
 - the **disambiguator** is responsible for removing any ambiguities that may exist between the candidate entities, i.e., selecting the correct entity among the candidate ones.
 
 The steps for using the entity linker are as follows :
 
-- load a graph with the **graph loader**;
-- load a NLP pipeline from spaCy to preprocess the text;
+- load a graph with the **graph loader** and convert it into a **knowledge graph** object;
 - extract the candidate entities from the text with the **entity matcher**;
 - apply the **disambiguator** if needed.
 
