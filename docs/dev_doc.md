@@ -24,7 +24,7 @@ classDiagram
 	}
 
     class GraphLoader{
-        +PathLive kg_file_path
+        +PathLike kg_file_path
         +Any kg
 
         +load_kg_from_file()
@@ -55,7 +55,7 @@ classDiagram
 
 	class Disambiguator{
 		+KnowledgeGraph kg
-        +spacy_model spacy.Language
+        +spacy.Language spacy_model
         +Optional[Callable[[Str], Array]] vectorizer
         +Optional[Callable[[Array, Array], Float]] similarity_measure
         +Optional[List[Str]] priorities
