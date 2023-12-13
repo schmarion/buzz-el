@@ -16,47 +16,57 @@ classDiagram
 	class EntityMatcher {
         +KnowledgeGraph kg
         +spacy.Language spacy_model
-        +EntityMatcherConfig config
+        +Bool ignore_case
+        +Str fuzzy_func
+        +Int min_r
 
         +__call__(spacy.Doc) spacy.Doc
 	}
 
-	class EntityMatcherConfig{
-		+Enum["LOWER", "ORTH"] phrase_matcher_attr
-        +Bool ignore_case
-        +Str fuzzy_func
-        +Int min_r
-	}
+    class GraphLoader{
+        +PathLike kg_file_path
+        +Any kg
+
+        +load_kg_from_file()
+        +build_patterns() List[Dict[Str, Str]]
+        +kg_get_context() Callable[[Str], Str]
+        +build_knowledge_graph() KnowledgeGraph
+    }
+
+    class RDFGraphLoader{
+        +Optional[Set[Str]] label_properties
+        +Optional[Set[Str]] context_properties
+        +Optional[Str] lang_filter_tag
+
+        +__call__() KnowledgeGraph
+        +load_kg_from_file() -> Graph
+        -_build_ent_labels_sparql_query() Str
+        -_build_ent_context_from_labels_query(Str) Str
+        -_build_ent_context_from_props_query(Str) Str
+    }
 
 	class KnowledgeGraph{
-        +String kg_file_path
-        +Optional[Set[Str]] annotation_properties
-        +Optional[Str] lang_filter_tag
-        +Str interpretation_type
+        +Any kg
+        +List[Dict[Str, Str]] entity_patterns
+        +Callable[[Str], Str] get_entity_context
 
-        +build_patterns(Str) Set[Str]
-        +sparql_endpoint(Str) Str
-        +get_context(Str) Str
+        +sparql_endpoint(Str) Iterable
 	}
 
 	class Disambiguator{
 		+KnowledgeGraph kg
-        +spacy_model spacy.Language
-        +DisambiguatorConfig config
+        +spacy.Language spacy_model
+        +Optional[Callable[[Str], Array]] vectorizer
+        +Optional[Callable[[Array, Array], Float]] similarity_measure
+        +Optional[List[Str]] priorities
+        +Optional[Dict[Str, Int]] entities_weight
 
         +__call__(spacy.Doc) spacy.Doc
 	}
 
-	class DisambiguatorConfig {
-		+Optional[Callable[[Str], Array]] vectorizer
-        +Optional[Callable[[Array, Array], Float]] similarity_measure
-        +Optional[List[Str]] priorities
-        +Optional[Dict[Str, Int]] entities_weight
-	}
 
-    EntityMatcher "1" *-- "1" EntityMatcherConfig
-    Disambiguator "1" *-- "1" DisambiguatorConfig
-
+    GraphLoader <|-- RDFGraphLoader
+    RDFGraphLoader "1" o-- "1" KnowledgeGraph
     EntityMatcher "1" o-- "1" KnowledgeGraph
     Disambiguator "1" o-- "1" KnowledgeGraph
     EntityLinker "1" o-- "1" KnowledgeGraph
@@ -66,13 +76,16 @@ classDiagram
 
 ## Some notes about the project philosophy:
 
-The projet relies on the spaCy NLP python library and aims at being integrated into a spaCy project.
+The project relies on the spaCy NLP python library and aims at being integrated into a spaCy project.
 
 At minimum the entity linker should be provided as a spaCy pipe.
 
 ### Knowledge Graph
 
-The Knowledge Graph class must provide all methods needed by other components to interact with the knowledge graph.
+The graph is loaded with a Graph Loader into a Knowledge Graph class.
+Different graph loaders can be implemented to match different formats.
+
+The Knowledge Graph class must provide all methods needed by other components to interact with the graph.
 
 ### Entity Linker
 
