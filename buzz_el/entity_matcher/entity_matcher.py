@@ -12,19 +12,6 @@ class EntityMatcher:
     """
     A class to construct an entity matcher from a knowledge graph.
 
-    Parameters
-    ----------
-    knowledge_graph : KnowledgeGraph
-        The knowledge graph to match the entities.
-    spacy_model : Language
-        The spaCy model to use in internal spaCy components.
-    ignore_case : Optional[bool], optional
-        Whether to ignore case, by default True.
-    min_r : Optional[int], optional
-        TODO, by default None
-    fuzzy_func : Optional[str], optional
-        The fuzzy matching function to use, by default None.
-
     Attributes
     ----------
     kg : KnowledgeGraph
@@ -33,17 +20,16 @@ class EntityMatcher:
         The spaCy model to use in internal spaCy components.
     ignore_case : bool
         Whether to ignore case.
+    use_fuzzy : bool
+        Whether to use fuzzy matching.
+    fuzzy_threshold : int
+        It corresponds to min_r parameter in spaczz FuzzyMatcher.
+        Minimum ratio needed to match as a value between 0 and 100.
+        Default is 0, which deactivates this behaviour.
     _string_matcher: Callable[spacy.tokens.Doc, spacy.tokens.Doc]
         The string matcher component matching entities through string alignment.
     _fuzzy_matcher: Callable[spacy.tokens.Doc, spacy.tokens.Doc]
         The fuzzy matcher component matching entities through string fuzzy alignment.
-    _string_matcher_config : Dict
-        Configuration for the spaCy span ruler used for string matching,
-        by default {"spans_key": "string"}.
-        See: <https://spacy.io/api/spanruler#config>
-    _fuzzy_matcher_config : Dict
-        Configuration for the custom fuzzy ruler used for fuzzy matching,
-        by default {"spans_key": "fuzzy"}.
     """
 
     def __init__(
@@ -52,8 +38,7 @@ class EntityMatcher:
         spacy_model: Language,
         ignore_case: Optional[bool] = True,
         use_fuzzy: Optional[bool] = False,
-        # min_r: Optional[int] = None,
-        # fuzzy_func: Optional[str] = None,
+        fuzzy_threshold: Optional[int] = None,
     ) -> None:
         """Initialiser for the entity matcher.
 
@@ -65,29 +50,25 @@ class EntityMatcher:
             The spaCy model to use in internal spaCy components.
         ignore_case : Optional[bool], optional
             Whether to ignore case, by default True.
-        min_r : Optional[int], optional
-            TODO, by default None
-        fuzzy_func : Optional[str], optional
-            The fuzzy matching function to use, by default None.
+        use_fuzzy : Optional[bool], optional
+            Whether to use fuzzy matching, by default False.
+        fuzzy_threshold : int
+            It corresponds to min_r parameter in spaczz FuzzyMatcher.
+            Minimum ratio needed to match as a value between 0 and 100.
+            Default is 0, which deactivates this behaviour.
         """
         self.spacy_model = spacy_model
         self.kg = knowledge_graph
         self.ignore_case = ignore_case
-        # self.min_r = min_r
-        # self.fuzzy_func = fuzzy_func
-
-        # self._string_matcher_config = {"spans_key": "string"}
-
-        # if self.ignore_case:
-        # self._string_matcher_config["phrase_matcher_attr"] = "LOWER"
+        self.use_fuzzy = use_fuzzy
+        self.fuzzy_threshold = fuzzy_threshold
 
         self._string_matcher = None
-        self.build_string_matcher()
-
-        # self._fuzzy_matcher_config = {"spans_key": "fuzzy"}
         self._fuzzy_matcher = None
-        if use_fuzzy:
+        if self.use_fuzzy:
             self.build_fuzzy_matcher()
+        else:
+            self.build_string_matcher()
 
     def __call__(self, doc: Doc) -> Doc:
         """
@@ -98,13 +79,13 @@ class EntityMatcher:
         doc : Doc
             The spaCy doc to process.
         """
-        if self._string_matcher is None:
+        if (self._string_matcher is None) and (self._fuzzy_matcher is None):
             self.build_string_matcher()
+            doc = self._string_matcher(doc)
+        elif self._fuzzy_matcher is not None:
+            doc = self._fuzzy_matcher(doc)
         else:
             doc = self._string_matcher(doc)
-
-        if self._fuzzy_matcher is not None:
-            doc = self._fuzzy_matcher(doc)
 
         return doc
 
@@ -136,6 +117,7 @@ class EntityMatcher:
         ----------
         config : Optional[Dict], optional
             Configuration for the spaCy span ruler, by default None.
+            See: <https://spacy.io/api/spanruler#config>
         """
         if config is None:
             string_matcher_config = {"spans_key": "string"}
@@ -159,6 +141,7 @@ class EntityMatcher:
         ----------
         config : Optional[Dict], optional
             Configuration for the custom fuzzy ruler, by default None.
+            See: <https://spaczz.readthedocs.io/en/latest/reference.html#spaczz.matcher.FuzzyMatcher.defaults>
         """
         spans_key = "fuzzy"
         if config is not None:
@@ -166,17 +149,12 @@ class EntityMatcher:
                 self.spacy_model,
                 self.ignore_case,
                 spans_key,
+                self.fuzzy_threshold,
                 **config,
-                # self.min_r,
-                # self.fuzzy_func,
             )
         else:
             ruler = FuzzyRuler(
-                self.spacy_model,
-                self.ignore_case,
-                spans_key,
-                # self.min_r,
-                # self.fuzzy_func,
+                self.spacy_model, self.ignore_case, spans_key, self.fuzzy_threshold
             )
 
         ruler.add_patterns(self.kg.entity_patterns)

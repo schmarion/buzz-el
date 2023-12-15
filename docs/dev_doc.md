@@ -13,15 +13,25 @@ classDiagram
 		+__call__(spacy.Doc) spacy.Doc
 	}
 
-	class EntityMatcher {
+	class EntityMatcher{
         +KnowledgeGraph kg
         +spacy.Language spacy_model
         +Bool ignore_case
-        +Str fuzzy_func
-        +Int min_r
+        +Bool use_fuzzy
 
         +__call__(spacy.Doc) spacy.Doc
 	}
+
+    class FuzzyRuler{
+        +Language spacy_model
+        +Optional[Bool] ignore_case
+        +Optional[Str] spans_key
+        +FuzzyMatcher matcher
+
+        +__call__(spacy.Doc) spacy.Doc
+        +add_patterns(List[Dict[Str, Str]])
+        +set_annotations(spacy.Doc, List[Tuple])
+    }
 
     class GraphLoader{
         +PathLike kg_file_path
@@ -68,6 +78,7 @@ classDiagram
     GraphLoader <|-- RDFGraphLoader
     RDFGraphLoader "1" o-- "1" KnowledgeGraph
     EntityMatcher "1" o-- "1" KnowledgeGraph
+    EntityMatcher "1" o-- "0..1" FuzzyRuler
     Disambiguator "1" o-- "1" KnowledgeGraph
     EntityLinker "1" o-- "1" KnowledgeGraph
     EntityLinker "1" o-- "1" EntityMatcher

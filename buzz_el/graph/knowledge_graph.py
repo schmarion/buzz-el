@@ -7,15 +7,6 @@ class KnowledgeGraph:
 
     Instances of this class are typically built by a graph loader.
 
-    Parameters
-    ----------
-    kg: Any
-        The knowledge graph object.
-    entity_patterns: List[Dict[str, str]]
-        The entity patterns.
-    get_entity_context : Callable[[str], str]
-        Callable to fetch the context string of an entity.
-
     Attributes
     ----------
     kg: Any
@@ -25,6 +16,7 @@ class KnowledgeGraph:
     get_context : Callable[[str], str]
         Callable to fetch the context string of an entity.
     """
+
     def __init__(
         self,
         kg: Any,
