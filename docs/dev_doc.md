@@ -18,6 +18,7 @@ classDiagram
         +spacy.Language spacy_model
         +Bool ignore_case
         +Bool use_fuzzy
+        +Int fuzzy_threshold
 
         +__call__(spacy.Doc) spacy.Doc
 	}
@@ -27,6 +28,7 @@ classDiagram
         +Optional[Bool] ignore_case
         +Optional[Str] spans_key
         +FuzzyMatcher matcher
+        +Int fuzzy_threshold
 
         +__call__(spacy.Doc) spacy.Doc
         +add_patterns(List[Dict[Str, Str]])

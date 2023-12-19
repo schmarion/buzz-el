@@ -13,7 +13,7 @@ class EntityMatcher:
     A class to construct an entity matcher from a knowledge graph.
 
     Fuzzy matching is performed via a similarity score (not a distance) between 0 and 100. Hence,
-    the fuzzy threshold value 100 corresponds to exact matches. 0 will set default values for the 
+    the fuzzy threshold value 100 corresponds to exact matches. 0 will set default values for the
     fuzzy matcher.
 
     Attributes
@@ -158,7 +158,10 @@ class EntityMatcher:
             )
         else:
             ruler = FuzzyRuler(
-                self.spacy_model, self.ignore_case, spans_key, self.fuzzy_threshold
+                spacy_model=self.spacy_model,
+                ignore_case=self.ignore_case,
+                spans_key=spans_key,
+                fuzzy_threshold=self.fuzzy_threshold,
             )
 
         ruler.add_patterns(self.kg.entity_patterns)

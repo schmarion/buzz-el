@@ -65,7 +65,7 @@ class FuzzyRuler:
         )
 
         self.matcher = FuzzyMatcher(
-            self.spacy_model.vocab, ignore_case=self.ignore_case, **config
+            vocab=self.spacy_model.vocab, ignore_case=self.ignore_case, **config
         )
 
     def add_patterns(self, patterns: List[Dict[str, str]]) -> None:
@@ -116,7 +116,7 @@ class FuzzyRuler:
                 label=label_with_id[: label_with_id.find("#")],
                 span_id=label_with_id[label_with_id.find("#") + 1 :],
             )
-            for label_with_id, start, end, ratio, pattern in matches
+            for label_with_id, start, end, _, _ in matches
             if start != end
         )
         formatted_matches = sorted(list(deduplicated_matches))
