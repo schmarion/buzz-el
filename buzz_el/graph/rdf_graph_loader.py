@@ -12,18 +12,6 @@ class RDFGraphLoader(GraphLoader):
     """
     A class to build a knowledge graph instance.
 
-    Parameters
-    ----------
-    kg_file_path : PathLike
-        The path to the knowledge graph file.
-    label_properties : Optional[Set[str]], optional
-        Set of relations used to link entities to their labels, by default {"rdfs:label"}.
-    context_properties : Optional[Set[str]], optional
-        Set of relations used to link entities to their context strings, by default None.
-    lang_filter_tag : Optional[str], optional
-        Language filter tag to filter entity labels and context strings based on language,
-        by default None.
-
     Attributes
     ----------
     kg_file_path : PathLike

@@ -10,13 +10,14 @@ from .knowledge_graph import KnowledgeGraph
 class GraphLoader(ABC):
     """Abstract class for the graph loaders.
 
-    Parameters
+    Attributes
     ----------
-    kg_file_path : PathLike
+    _kg_file_path : PathLike
         The path to the knowledge graph file.
     kg: Any
         The knowledge graph object.
     """
+
     def __init__(self, kg_file_path: PathLike) -> None:
         """Initialise the RDF graph loader object.
 
