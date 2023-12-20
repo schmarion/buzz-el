@@ -12,6 +12,10 @@ class EntityMatcher:
     """
     A class to construct an entity matcher from a knowledge graph.
 
+    Fuzzy matching is performed via a similarity score (not a distance) between 0 and 100. Hence,
+    the fuzzy threshold value 100 corresponds to exact matches. 0 will set default values for the 
+    fuzzy matcher.
+
     Attributes
     ----------
     kg : KnowledgeGraph
@@ -25,7 +29,7 @@ class EntityMatcher:
     fuzzy_threshold : int
         It corresponds to min_r parameter in spaczz FuzzyMatcher.
         Minimum ratio needed to match as a value between 0 and 100.
-        Default is 0, which deactivates this behaviour.
+        Default is 0, which deactivates this behavior.
     _string_matcher: Callable[spacy.tokens.Doc, spacy.tokens.Doc]
         The string matcher component matching entities through string alignment.
     _fuzzy_matcher: Callable[spacy.tokens.Doc, spacy.tokens.Doc]
@@ -55,7 +59,7 @@ class EntityMatcher:
         fuzzy_threshold : int
             It corresponds to min_r parameter in spaczz FuzzyMatcher.
             Minimum ratio needed to match as a value between 0 and 100.
-            Default is 0, which deactivates this behaviour.
+            Default is 0, which deactivates this behavior.
         """
         self.spacy_model = spacy_model
         self.kg = knowledge_graph
