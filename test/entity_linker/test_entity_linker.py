@@ -49,8 +49,8 @@ class TestEntityLinker:
         assert len(doc.ents) == 10
 
     def test_entity_linker_pipe(self, entity_linker, corpus) -> None:
-        for doc in corpus[1:]:
+        for doc in corpus:
             assert not (doc.ents)
-        corpus = entity_linker.pipe(corpus[1:])
+        corpus = entity_linker.pipe(corpus)
         for doc in corpus:
             assert len(doc.ents) > 0
