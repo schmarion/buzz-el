@@ -100,7 +100,7 @@ class EntityLinker:
         """
         Check if the doc span group has overlap.
         If it is the case, the disambiguator is used to determine the right candidate.
-        Entites found are stored in the doc ents attribute.
+        Entities found are stored in the doc ents attribute.
 
         Parameters
         ----------

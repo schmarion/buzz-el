@@ -7,7 +7,7 @@ from buzz_el.entity_linker import EntityLinker
 from buzz_el.entity_matcher import EntityMatcher
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="function")
 def corpus(en_sm_spacy_model, pizza_bisou_en_reviews) -> List[Doc]:
     docs = [doc for doc in en_sm_spacy_model.pipe(pizza_bisou_en_reviews)]
     return docs
@@ -48,7 +48,7 @@ class TestEntityLinker:
         doc = entity_linker(doc)
         assert len(doc.ents) == 10
 
-    def test_entity_linker_call(self, entity_linker, corpus) -> None:
+    def test_entity_linker_pipe(self, entity_linker, corpus) -> None:
         for doc in corpus[1:]:
             assert not (doc.ents)
         corpus = entity_linker.pipe(corpus[1:])

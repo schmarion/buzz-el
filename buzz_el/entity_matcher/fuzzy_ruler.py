@@ -22,7 +22,7 @@ class FuzzyRuler:
         Minimum ratio needed to match as a value between 0 and 100.
         Default is 0, which deactivates this behaviour.
     matcher : FuzzyMatcher
-        The spaczz matcher to use to match entites.
+        The spaczz matcher to use to match entities.
     """
 
     def __init__(
