@@ -19,6 +19,7 @@ classDiagram
         +Bool ignore_case
         +Bool use_fuzzy
         +Int fuzzy_threshold
+        +Str spans_key
 
         +__call__(spacy.Doc) spacy.Doc
 	}

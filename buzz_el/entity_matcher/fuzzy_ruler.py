@@ -17,12 +17,12 @@ class FuzzyRuler:
         Whether to ignore case, by default True.
     spans_key : Optional[str], optional
         The spans key to use to store the matches found in the spaCy doc spans attribute.
-    matcher : FuzzyMatcher
-        The spaczz matcher to use to match entites.
-    fuzzy_threshold : int
+    fuzzy_threshold : Optional[int], optional
         It corresponds to min_r parameter in spaczz FuzzyMatcher.
         Minimum ratio needed to match as a value between 0 and 100.
         Default is 0, which deactivates this behaviour.
+    matcher : FuzzyMatcher
+        The spaczz matcher to use to match entities.
     """
 
     def __init__(
@@ -43,9 +43,11 @@ class FuzzyRuler:
             Whether to ignore case, by default True.
         spans_key : Optional[str], optional
             The spans key to use to store the matches found in the spaCy doc spans attribute.
-        fuzzy_threshold : int
+        fuzzy_threshold : Optional[int], optional
             Threshold used to validate fuzzy matches.
             It corresponds to min_r parameter in spaczz FuzzyMatcher.
+            Minimum ratio needed to match as a value between 0 and 100.
+            Default is 0, which deactivates this behaviour.
         config : Optional[Dict], optional
             Configuration for the custom fuzzy ruler, by default None.
             See: <https://spaczz.readthedocs.io/en/latest/reference.html#spaczz.matcher.FuzzyMatcher.defaults>
@@ -60,9 +62,8 @@ class FuzzyRuler:
 
         if config is None:
             config = {}
-        config["min_r"] = (
-            self.fuzzy_threshold if self.fuzzy_threshold is not None else 0
-        )
+        if self.fuzzy_threshold is not None:
+            config["min_r"] = self.fuzzy_threshold
 
         self.matcher = FuzzyMatcher(
             vocab=self.spacy_model.vocab, ignore_case=self.ignore_case, **config
@@ -92,6 +93,11 @@ class FuzzyRuler:
         ----------
         doc : Doc
             The spaCy doc to process.
+
+        Returns
+        -------
+        Doc
+            The spaCy doc processed.
         """
         matches = self.matcher(doc)
         self.set_annotations(doc, matches)

@@ -30,6 +30,8 @@ class EntityMatcher:
         It corresponds to min_r parameter in spaczz FuzzyMatcher.
         Minimum ratio needed to match as a value between 0 and 100.
         Default is 0, which deactivates this behavior.
+    spans_key : string
+        Key to use to get entity matches in spaCy doc spans.
     _string_matcher: Callable[spacy.tokens.Doc, spacy.tokens.Doc]
         The string matcher component matching entities through string alignment.
     _fuzzy_matcher: Callable[spacy.tokens.Doc, spacy.tokens.Doc]
@@ -70,8 +72,10 @@ class EntityMatcher:
         self._string_matcher = None
         self._fuzzy_matcher = None
         if self.use_fuzzy:
+            self.spans_key = "fuzzy"
             self.build_fuzzy_matcher()
         else:
+            self.spans_key = "string"
             self.build_string_matcher()
 
     def __call__(self, doc: Doc) -> Doc:
@@ -82,6 +86,11 @@ class EntityMatcher:
         ----------
         doc : Doc
             The spaCy doc to process.
+
+        Returns
+        -------
+        Doc
+            The spaCy doc processed.
         """
         if (self._string_matcher is None) and (self._fuzzy_matcher is None):
             self.build_string_matcher()
@@ -104,7 +113,7 @@ class EntityMatcher:
 
         Returns
         -------
-        Iterable
+        Iterable[Doc]
             An iterable of processed spaCy docs.
         """
         for doc in docs:
@@ -147,20 +156,19 @@ class EntityMatcher:
             Configuration for the custom fuzzy ruler, by default None.
             See: <https://spaczz.readthedocs.io/en/latest/reference.html#spaczz.matcher.FuzzyMatcher.defaults>
         """
-        spans_key = "fuzzy"
         if config is not None:
             ruler = FuzzyRuler(
-                self.spacy_model,
-                self.ignore_case,
-                spans_key,
-                self.fuzzy_threshold,
+                spacy_model=self.spacy_model,
+                ignore_case=self.ignore_case,
+                spans_key=self.spans_key,
+                fuzzy_threshold=self.fuzzy_threshold,
                 **config,
             )
         else:
             ruler = FuzzyRuler(
                 spacy_model=self.spacy_model,
                 ignore_case=self.ignore_case,
-                spans_key=spans_key,
+                spans_key=self.spans_key,
                 fuzzy_threshold=self.fuzzy_threshold,
             )
 
