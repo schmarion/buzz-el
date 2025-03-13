@@ -1,6 +1,6 @@
 # buzz-el
 
-> Towards universal entity linker and beyonds 🚀
+> Towards a universal entity linker and beyond 🚀
 
 ## Project description
 
